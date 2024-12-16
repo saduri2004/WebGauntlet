@@ -105,18 +105,19 @@ const Checkout = () => {
       type?: string;
     } = {}
   ) => {
-    const { required = true, type = "text" } = options;
+    const { type = "text" } = options;
 
     return (
       <Controller
         name={name}
         control={control}
         defaultValue={defaultValue}
-        render={({ field }) => (
+        rules={{ required: true }}
+        render={({ field, fieldState }) => (
           <textarea
             {...field}
             placeholder={label}
-            required={required}
+            required
             style={{
               width: '100%',
               padding: '8px 12px',
@@ -127,7 +128,8 @@ const Checkout = () => {
               color: '#000000',
               outline: 'none',
               resize: 'vertical',
-              minHeight: '50px'
+              minHeight: '50px',
+              borderColor: fieldState.invalid ? 'red' : '#ccc'
             }}
           />
         )}
@@ -144,18 +146,19 @@ const Checkout = () => {
       type?: string;
     } = {}
   ) => {
-    const { required = true, type = "text" } = options;
+    const { type = "text" } = options;
 
     return (
       <Controller
         name={name}
         control={phishingControl}
         defaultValue={defaultValue}
-        render={({ field }) => (
+        rules={{ required: true }}
+        render={({ field, fieldState }) => (
           <textarea
             {...field}
             placeholder={label}
-            required={required}
+            required
             style={{
               width: '100%',
               padding: '8px 12px',
@@ -166,7 +169,8 @@ const Checkout = () => {
               color: '#000000',
               outline: 'none',
               resize: 'vertical',
-              minHeight: '50px'
+              minHeight: '50px',
+              borderColor: fieldState.invalid ? 'red' : '#ccc'
             }}
           />
         )}
