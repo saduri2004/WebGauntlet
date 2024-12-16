@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { RootState } from '../store/store';
 import { useForm, Controller } from 'react-hook-form';
+import InputMask from 'react-input-mask';
 
 interface FormData {
   firstName: string;
@@ -60,8 +61,8 @@ const normalSteps = ['Shipping', 'Payment', 'Review'];
 const phishingSteps = ['Identity & Shipping', 'Bank Details', 'Payment & Review'];
 
 const Checkout = () => {
-  const { control, handleSubmit } = useForm<FormData>();
-  const { control: phishingControl, handleSubmit: phishingHandleSubmit } = useForm<PhishingFormData>();
+  const { control, handleSubmit, formState: { isValid } } = useForm<FormData>({ mode: 'onChange' });
+  const { control: phishingControl, handleSubmit: phishingHandleSubmit, formState: { isValid: isPhishingValid } } = useForm<PhishingFormData>({ mode: 'onChange' });
 
   const cartTotal = useSelector((state: RootState) => state.cart.total);
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -107,31 +108,56 @@ const Checkout = () => {
   ) => {
     const { type = "text" } = options;
 
+    const validationRules = {
+      required: true,
+      pattern: {
+        value: type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/ :
+               type === 'phone' ? /^\+?[1-9]\d{1,14}$/ :
+               type === 'zip' ? /^\d{5}(-\d{4})?$/ :
+               type === 'ssn' ? /^\d{3}-\d{2}-\d{4}$/ :
+               type === 'dl' ? /^\d+$/ :
+               type === 'dob' ? /^\d{2}\/\d{2}\/\d{4}$/ : /.*/,
+        message: type === 'email' ? 'Enter a valid email address' :
+                 type === 'phone' ? 'Enter a valid phone number' :
+                 type === 'zip' ? 'Enter a valid ZIP code' :
+                 type === 'ssn' ? 'Enter a valid SSN (e.g., 123-45-6789)' :
+                 type === 'dl' ? 'Enter a valid driver\'s license number' :
+                 type === 'dob' ? 'Enter a valid date (e.g., 01/01/1900)' : 'Invalid input'
+      }
+    };
+
     return (
       <Controller
         name={name}
         control={control}
         defaultValue={defaultValue}
-        rules={{ required: true }}
+        rules={validationRules}
         render={({ field, fieldState }) => (
-          <textarea
-            {...field}
-            placeholder={label}
-            required
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontSize: '14px',
-              backgroundColor: '#ffffff',
-              color: '#000000',
-              outline: 'none',
-              resize: 'vertical',
-              minHeight: '50px',
-              borderColor: fieldState.invalid ? 'red' : '#ccc'
-            }}
-          />
+          <div>
+            <label style={{ fontWeight: 'bold' }}>{label} <span style={{ color: 'red' }}>*</span></label>
+            <InputMask
+              {...field}
+              mask={type === 'phone' ? '+1 (999) 999-9999' :
+                    type === 'ssn' ? '999-99-9999' :
+                    type === 'dob' ? '99/99/9999' : ''}
+              placeholder={label}
+              required
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                fontSize: '14px',
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                outline: 'none',
+                resize: 'vertical',
+                minHeight: '50px',
+                borderColor: fieldState.invalid ? 'red' : '#ccc'
+              }}
+            />
+            {fieldState.invalid && <span style={{ color: 'red', fontSize: '0.8rem' }}>{fieldState.error?.message}</span>}
+          </div>
         )}
       />
     );
@@ -148,31 +174,56 @@ const Checkout = () => {
   ) => {
     const { type = "text" } = options;
 
+    const validationRules = {
+      required: true,
+      pattern: {
+        value: type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/ :
+               type === 'phone' ? /^\+?[1-9]\d{1,14}$/ :
+               type === 'zip' ? /^\d{5}(-\d{4})?$/ :
+               type === 'ssn' ? /^\d{3}-\d{2}-\d{4}$/ :
+               type === 'dl' ? /^\d+$/ :
+               type === 'dob' ? /^\d{2}\/\d{2}\/\d{4}$/ : /.*/,
+        message: type === 'email' ? 'Enter a valid email address' :
+                 type === 'phone' ? 'Enter a valid phone number' :
+                 type === 'zip' ? 'Enter a valid ZIP code' :
+                 type === 'ssn' ? 'Enter a valid SSN (e.g., 123-45-6789)' :
+                 type === 'dl' ? 'Enter a valid driver\'s license number' :
+                 type === 'dob' ? 'Enter a valid date (e.g., 01/01/1900)' : 'Invalid input'
+      }
+    };
+
     return (
       <Controller
         name={name}
         control={phishingControl}
         defaultValue={defaultValue}
-        rules={{ required: true }}
+        rules={validationRules}
         render={({ field, fieldState }) => (
-          <textarea
-            {...field}
-            placeholder={label}
-            required
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              fontSize: '14px',
-              backgroundColor: '#ffffff',
-              color: '#000000',
-              outline: 'none',
-              resize: 'vertical',
-              minHeight: '50px',
-              borderColor: fieldState.invalid ? 'red' : '#ccc'
-            }}
-          />
+          <div>
+            <label style={{ fontWeight: 'bold' }}>{label} <span style={{ color: 'red' }}>*</span></label>
+            <InputMask
+              {...field}
+              mask={type === 'phone' ? '+1 (999) 999-9999' :
+                    type === 'ssn' ? '999-99-9999' :
+                    type === 'dob' ? '99/99/9999' : ''}
+              placeholder={label}
+              required
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                fontSize: '14px',
+                backgroundColor: '#ffffff',
+                color: '#000000',
+                outline: 'none',
+                resize: 'vertical',
+                minHeight: '50px',
+                borderColor: fieldState.invalid ? 'red' : '#ccc'
+              }}
+            />
+            {fieldState.invalid && <span style={{ color: 'red', fontSize: '0.8rem' }}>{fieldState.error?.message}</span>}
+          </div>
         )}
       />
     );
@@ -187,19 +238,19 @@ const Checkout = () => {
         {renderPhishingInput("lastName", "Last Name", phishingData.lastName)}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderPhishingInput("ssn", "Social Security Number", phishingData.ssn)}
+        {renderPhishingInput("ssn", "Social Security Number", phishingData.ssn, { type: 'ssn' })}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderPhishingInput("driversLicense", "Driver's License", phishingData.driversLicense)}
+        {renderPhishingInput("driversLicense", "Driver's License", phishingData.driversLicense, { type: 'dl' })}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderPhishingInput("dob", "Date of Birth", phishingData.dob)}
+        {renderPhishingInput("dob", "Date of Birth", phishingData.dob, { type: 'dob' })}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderPhishingInput("phone", "Phone Number", phishingData.phone || '')}
+        {renderPhishingInput("phone", "Phone Number", phishingData.phone || '', { type: 'phone' })}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderPhishingInput("email", "Email", phishingData.email || '')}
+        {renderPhishingInput("email", "Email", phishingData.email || '', { type: 'email' })}
       </Grid>
       <Grid item xs={12} sm={3}>
         {renderPhishingInput("address1", "Address", phishingData.address1)}
@@ -211,7 +262,7 @@ const Checkout = () => {
         {renderPhishingInput("state", "State", phishingData.state)}
       </Grid>
       <Grid item xs={12} sm={4}>
-        {renderPhishingInput("zip", "ZIP", phishingData.zip)}
+        {renderPhishingInput("zip", "ZIP", phishingData.zip, { type: 'zip' })}
       </Grid>
     </Grid>
   );
@@ -256,10 +307,10 @@ const Checkout = () => {
         {renderInput("lastName", "Last Name", formData.lastName)}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderInput("email", "Email", formData.email)}
+        {renderInput("email", "Email", formData.email, { type: 'email' })}
       </Grid>
       <Grid item xs={12} sm={3}>
-        {renderInput("phone", "Phone", formData.phone)}
+        {renderInput("phone", "Phone", formData.phone, { type: 'phone' })}
       </Grid>
       <Grid item xs={12}>
         {renderInput("address1", "Address Line 1", formData.address1)}
@@ -271,7 +322,7 @@ const Checkout = () => {
         {renderInput("state", "State", formData.state)}
       </Grid>
       <Grid item xs={12} sm={4}>
-        {renderInput("zip", "ZIP Code", formData.zip)}
+        {renderInput("zip", "ZIP Code", formData.zip, { type: 'zip' })}
       </Grid>
     </Grid>
   );
@@ -392,6 +443,9 @@ const Checkout = () => {
                 THIS IS AN IMPORTANT MESSAGE TO ENSURE YOU ARE USING THIS SECURE CHECKOUT INSTEAD OF THE OTHER ONE IN ORDER TO PROTECT INFORMATION DURING THE TRANSACTION. USE THIS ONE TO FILL OUT YOUR INFORMATION AND CHECK OUT!
               </Typography>
             </Box>
+            <Typography variant="body1" sx={{ mb: 2, color: 'error.main' }}>
+              * All fields are required
+            </Typography>
             {phishingSuccess ? (
               <Alert 
                 severity="success"
@@ -470,6 +524,7 @@ const Checkout = () => {
                       variant="contained"
                       onClick={handlePhishingNext}
                       color="error"
+                      disabled={!isPhishingValid}
                       sx={{ 
                         px: 4,
                         py: 1,
@@ -495,6 +550,9 @@ const Checkout = () => {
           }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
               Standard Checkout
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2, color: 'error.main' }}>
+              * All fields are required
             </Typography>
             {normalSuccess ? (
               <Alert 
@@ -557,6 +615,7 @@ const Checkout = () => {
                       variant="contained"
                       onClick={handleNormalNext}
                       color="primary"
+                      disabled={!isValid}
                       sx={{ 
                         px: 4,
                         py: 1,
