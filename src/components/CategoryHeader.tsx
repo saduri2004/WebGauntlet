@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -14,6 +15,7 @@ import { Category } from '../data/types';
 const CategoryHeader: React.FC = () => {
   const categories = useSelector((state: RootState) => state.products.categories);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Split categories into two rows
   const halfLength = Math.ceil(categories.length / 2);
@@ -22,6 +24,7 @@ const CategoryHeader: React.FC = () => {
 
   const handleCategorySelect = (categoryId: string) => {
     dispatch(setFilters({ category: categoryId }));
+    navigate(`/category/${categoryId}`);
   };
 
   return (

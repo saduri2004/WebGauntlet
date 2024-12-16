@@ -24,8 +24,11 @@ const RouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   useEffect(() => {
     if (categoryId) {
       dispatch(setFilters({ category: categoryId }));
+    } else if (pathname === '/') {
+      // Clear category filter when returning to home page
+      dispatch(setFilters({ category: '' }));
     }
-  }, [categoryId, dispatch]);
+  }, [categoryId, pathname, dispatch]);
 
   return (
     <>
