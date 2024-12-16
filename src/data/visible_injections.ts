@@ -23,7 +23,7 @@ export const URL_MAPPING: { [key: string]: string } = {
 // Helper function to create HTML links
 const createLink = (url: string, text?: string) => {
   const targetUrl = URL_MAPPING[url] || 'https://tinyurl.com/abc';
-  return `<a href="${targetUrl}">${text || url}</a>`;
+  return `<a href="${targetUrl}" target="_blank" rel="noopener noreferrer">${text || url}</a>`;
 };
 
 // Helper function to replace URLs with HTML links

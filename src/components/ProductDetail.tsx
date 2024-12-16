@@ -30,7 +30,7 @@ import {
   Alert,
   Tooltip,
   Badge,
-  Link,
+  Link
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -398,6 +398,44 @@ const ProductDetail: React.FC = () => {
             )}
           </Box>
 
+          <Paper elevation={1} sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <LocalShippingIcon sx={{ mr: 2, color: 'primary.main' }} />
+              <Typography variant="h6" component="div">
+                Shipping Information
+              </Typography>
+            </Box>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 1,
+              pl: 5  // Align with the title
+            }}>
+              <Typography variant="body1" component="div" sx={{ 
+                whiteSpace: 'pre-line',  // Preserve line breaks
+                '& a': {  // Style links within the shipping info
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }
+              }}>
+                {renderHtmlContent(misleadingContent?.shipping || `${product.deliveryInfo.isFreeDelivery ? 'Free Shipping' : `Shipping: $${product.deliveryInfo.shippingCost}`}\nEstimated delivery: ${product.deliveryInfo.estimatedDays} days`)}
+              </Typography>
+              {product.deliveryInfo.isFreeDelivery && (
+                <Chip 
+                  icon={<CheckCircleIcon />} 
+                  label="Free Shipping" 
+                  color="success" 
+                  size="small"
+                  sx={{ alignSelf: 'flex-start' }}
+                />
+              )}
+            </Box>
+          </Paper>
+
+          {/* Checkout Ad Section */}
           <Box sx={{ mb: 3 }}>
             <AdManager categoryId={category} showButtonAd={true} />
           </Box>
@@ -414,85 +452,80 @@ const ProductDetail: React.FC = () => {
           >
             Add to Cart
           </Button>
-
-          {/* Checkout Ads Section */}
-          <Box sx={{ mb: 3 }}>
-            <AdManager categoryId={category} showButtonAd={true} />
-          </Box>
         </Grid>
+      </Grid>
 
-        {/* Product Information Sections */}
-        <Grid item xs={12}>
-          {/* Description Section */}
-          <Box sx={{ mb: 6 }}>
-            <Typography variant="h5" gutterBottom sx={{ borderBottom: 1, borderColor: 'divider', pb: 1 }}>
-              Product Description
-            </Typography>
-            <Typography variant="body1">
-              {renderHtmlContent(misleadingContent?.description || product.description)}
-            </Typography>
-          </Box>
+      {/* Product Information Sections */}
+      <Grid item xs={12}>
+        {/* Description Section */}
+        <Box sx={{ mb: 6 }}>
+          <Typography variant="h5" gutterBottom sx={{ borderBottom: 1, borderColor: 'divider', pb: 1 }}>
+            Product Description
+          </Typography>
+          <Typography variant="body1">
+            {renderHtmlContent(misleadingContent?.description || product.description)}
+          </Typography>
+        </Box>
 
-          {/* Specifications Section */}
-          <Box sx={{ mb: 6 }}>
-            <Typography variant="h5" gutterBottom sx={{ borderBottom: 1, borderColor: 'divider', pb: 1 }}>
-              Product Specifications
-            </Typography>
-            <TableContainer component={Paper} elevation={0}>
-              <Table>
-                <TableBody>
-                  {Object.entries(product.specifications).map(([key, value]) => (
-                    <TableRow key={key}>
-                      <TableCell component="th" scope="row" sx={{ fontWeight: 'bold', width: '30%', border: 'none' }}>
-                        {key}
-                      </TableCell>
-                      <TableCell sx={{ border: 'none' }}>{value}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
+        {/* Specifications Section */}
+        <Box sx={{ mb: 6 }}>
+          <Typography variant="h5" gutterBottom sx={{ borderBottom: 1, borderColor: 'divider', pb: 1 }}>
+            Product Specifications
+          </Typography>
+          <TableContainer component={Paper} elevation={0}>
+            <Table>
+              <TableBody>
+                {Object.entries(product.specifications).map(([key, value]) => (
+                  <TableRow key={key}>
+                    <TableCell component="th" scope="row" sx={{ fontWeight: 'bold', width: '30%', border: 'none' }}>
+                      {key}
+                    </TableCell>
+                    <TableCell sx={{ border: 'none' }}>{value}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
 
-          {/* Reviews Section */}
-          <Box sx={{ mt: 4 }}>
-            <Typography variant="h4" gutterBottom>
-              Customer Reviews
-            </Typography>
-            {(misleadingContent?.reviews || product.reviews).map((review, index) => (
-              <Paper key={index} sx={{ p: 2, mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <Rating value={review.rating} readOnly />
-                  <Typography variant="body2" sx={{ ml: 1 }}>
-                    {review.userName} - {new Date(review.date).toLocaleDateString()}
-                  </Typography>
-                </Box>
-                <Typography variant="h6" gutterBottom>
-                  {review.title}
+        {/* Reviews Section */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            Customer Reviews
+          </Typography>
+          {(misleadingContent?.reviews || product.reviews).map((review, index) => (
+            <Paper key={index} sx={{ p: 2, mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Rating value={review.rating} readOnly />
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  {review.userName} - {new Date(review.date).toLocaleDateString()}
                 </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                  <div dangerouslySetInnerHTML={{ __html: review.comment || review.text }} />
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Button
-                    size="small"
-                    startIcon={<ThumbUpIcon />}
-                    onClick={() => {/* Handle helpful click */}}
-                  >
-                    Helpful ({review.helpful})
-                  </Button>
-                  <Button
-                    size="small"
-                    startIcon={<ThumbDownIcon />}
-                    onClick={() => {/* Handle not helpful click */}}
-                  >
-                    Not Helpful ({review.notHelpful})
-                  </Button>
-                </Box>
-              </Paper>
-            ))}
-          </Box>
-        </Grid>
+              </Box>
+              <Typography variant="h6" gutterBottom>
+                {review.title}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                <div dangerouslySetInnerHTML={{ __html: review.comment || review.text }} />
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Button
+                  size="small"
+                  startIcon={<ThumbUpIcon />}
+                  onClick={() => {/* Handle helpful click */}}
+                >
+                  Helpful ({review.helpful})
+                </Button>
+                <Button
+                  size="small"
+                  startIcon={<ThumbDownIcon />}
+                  onClick={() => {/* Handle not helpful click */}}
+                >
+                  Not Helpful ({review.notHelpful})
+                </Button>
+              </Box>
+            </Paper>
+          ))}
+        </Box>
       </Grid>
     </Container>
   );
