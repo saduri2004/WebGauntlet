@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -10,12 +10,11 @@ import theme from './theme';
 import Navbar from './components/Navbar';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
-import Cart from './components/Cart';
+import Cart from './pages/Cart';
 import Wishlist from './components/Wishlist';
 import Checkout from './components/Checkout';
-import { AdManager } from './components/ads/AdManager';
 
-// Wrapper component to handle route-based ad management
+// Wrapper component to handle route-based category management
 const RouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -30,12 +29,7 @@ const RouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   }, [categoryId, pathname, dispatch]);
 
-  return (
-    <>
-      <AdManager categoryId={categoryId} />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 function App() {

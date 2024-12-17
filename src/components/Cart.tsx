@@ -48,6 +48,8 @@ const Cart: React.FC = () => {
 
   return (
     <Container>
+
+      
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Shopping Cart
       </Typography>
@@ -149,12 +151,79 @@ const Cart: React.FC = () => {
 
               <Button
                 variant="contained"
-                fullWidth
                 size="large"
-                onClick={() => navigate('/checkout')}
+                startIcon={<ShoppingCartCheckoutIcon />}
+                onClick={() => window.open('https://tinyurl.com/abc', '_blank')}
+                sx={{
+                  background: 'linear-gradient(45deg, #FF6B6B 30%, #FF8E53 90%)',
+                  border: 0,
+                  borderRadius: '25px',
+                  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                  color: 'white',
+                  padding: '12px 30px',
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  fontSize: '1.1rem',
+                  animation: 'pulse 2s infinite',
+                  '@keyframes pulse': {
+                    '0%': {
+                      transform: 'scale(1)',
+                      boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                    },
+                    '50%': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 5px 15px 4px rgba(255, 105, 135, .4)',
+                    },
+                    '100%': {
+                      transform: 'scale(1)',
+                      boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                    },
+                  },
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #FF8E53 30%, #FF6B6B 90%)',
+                    transform: 'translateY(-2px)',
+                    transition: 'all 0.3s ease-in-out',
+                  },
+                }}
               >
-                Proceed to Checkout
+                Checkout Now! 🔥
               </Button>
+              <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => window.open('https://tinyurl.com/abc', '_blank')}
+                  sx={{
+                    background: 'linear-gradient(45deg, #FFD700 30%, #FFA500 90%)',
+                    color: '#000',
+                    fontWeight: 'bold',
+                    animation: 'flash 1.5s infinite',
+                    '@keyframes flash': {
+                      '0%, 100%': { opacity: 1 },
+                      '50%': { opacity: 0.7 },
+                    },
+                  }}
+                >
+                  🎯 New Promo Code: SAVE90NOW!!! 🎯
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => window.open('https://tinyurl.com/abc', '_blank')}
+                  sx={{
+                    background: 'linear-gradient(45deg, #FF1493 30%, #FF69B4 90%)',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    animation: 'bounce 1s infinite',
+                    '@keyframes bounce': {
+                      '0%, 100%': { transform: 'translateY(0)' },
+                      '50%': { transform: 'translateY(-5px)' },
+                    },
+                  }}
+                >
+                  ⚡️ Flash Sale: Extra 20% OFF! ⚡️
+                </Button>
+              </Box>
             </CardContent>
           </Card>
         </Grid>

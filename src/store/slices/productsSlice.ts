@@ -98,26 +98,35 @@ function filterProducts(products: Product[], filters: FilterState): Product[] {
     if (filters.category) {
       console.log('Filtering by category:', filters.category);
       console.log('Product category:', product.category);
+      console.log('Product categoryId:', product.categoryId);
     }
 
-    const categoryMatch = !filters.category || product.categoryId === filters.category;
+    const categoryMatch = !filters.category || 
+      product.categoryId === filters.category || 
+      product.category.toLowerCase() === filters.category.toLowerCase();
       
     const subCategoryMatch = !filters.subCategory || 
-      product.subCategory === filters.subCategory;
+      product.subCategoryId === filters.subCategory ||
+      product.subCategory.toLowerCase() === filters.subCategory.toLowerCase();
       
     const priceMatch = product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1];
     const ratingMatch = product.rating >= filters.minRating;
     const brandMatch = !filters.brand || product.brand?.toLowerCase() === filters.brand.toLowerCase();
     const featuresMatch = filters.features.length === 0 || 
-      filters.features.every(feature => product.features?.some(f => f.toLowerCase() === feature.toLowerCase()));
+      filters.features.every(feature => 
+        product.features?.some(f => f.toLowerCase() === feature.toLowerCase())
+      );
     const stockMatch = !filters.inStock || product.inStock;
-    const searchMatch = matchesSearchQuery(product, filters.searchQuery);
+    const searchMatch = !filters.searchQuery || matchesSearchQuery(product, filters.searchQuery);
 
     // Debug each match condition
     if (filters.category) {
-      console.log('Product:', product.id, 'CategoryMatch:', categoryMatch, 
-        'Product category:', product.category, 
-        'Filter category:', filters.category);
+      console.log('Product:', product.id, 
+        'CategoryMatch:', categoryMatch, 
+        'Product category:', product.category,
+        'Product categoryId:', product.categoryId,
+        'Filter category:', filters.category
+      );
     }
     
     return categoryMatch && subCategoryMatch && priceMatch && ratingMatch && 
@@ -143,10 +152,9 @@ function filterProducts(products: Product[], filters: FilterState): Product[] {
     case 'relevance':
     default:
       if (filters.searchQuery) {
-        const query = filters.searchQuery.toLowerCase();
         filtered.sort((a, b) => {
-          const aScore = getRelevanceScore(a, query);
-          const bScore = getRelevanceScore(b, query);
+          const aScore = getRelevanceScore(a, filters.searchQuery);
+          const bScore = getRelevanceScore(b, filters.searchQuery);
           return bScore - aScore;
         });
       }

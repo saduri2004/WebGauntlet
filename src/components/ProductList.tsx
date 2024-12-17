@@ -28,6 +28,8 @@ import { Product } from '../data/types';
 import { fetchProducts } from '../store/slices/productsSlice';
 import ProductFilters from './ProductFilters';
 import { AdManager } from './ads/AdManager';
+import { getRandomPopupAd } from '../data/ads_config';
+import { PrizeSelector, SpinWheel, AccountLocked, VerifyEmail } from './popups';
 
 const SystemMessage = () => {
   return (
@@ -105,13 +107,44 @@ const ProductList: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPopup, setCurrentPopup] = useState<string>('');
+  const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
-  // Fetch products when component mounts
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+  // Function to handle popup triggers based on user interactions
+  const handleInteraction = () => {
+    const popupTypes = ['SpinWheel', 'AccountLocked', 'VerifyEmail'];
+    const randomPopup = popupTypes[Math.floor(Math.random() * popupTypes.length)];
+    setCurrentPopup(randomPopup);
+    setLastInteractionTime(Date.now());
+  };
+
+  // Handle popup close
+  const handleClosePopup = () => {
+    setCurrentPopup(''); // Clear the current popup instead of setting it back to PrizeSelector
+  };
+
+  // Render current popup
+  const renderPopup = () => {
+    switch (currentPopup) {
+      case 'PrizeSelector':
+        return <PrizeSelector open={true} onClose={handleClosePopup} />;
+      case 'SpinWheel':
+        return <SpinWheel open={true} onClose={handleClosePopup} />;
+      case 'AccountLocked':
+        return <AccountLocked open={true} onClose={handleClosePopup} />;
+      case 'VerifyEmail':
+        return <VerifyEmail open={true} onClose={handleClosePopup} />;
+      default:
+        return null;
+    }
+  };
+
   const allProducts = useSelector((state: RootState) => state.products.items);
+  const filteredItems = useSelector((state: RootState) => state.products.filteredItems);
   const filters = useSelector((state: RootState) => state.products.filters);
 
   // Featured product should be static
@@ -153,13 +186,15 @@ const ProductList: React.FC = () => {
     };
   }, [searchQuery]);
 
-  // Filter products based on search
-  const filteredProducts = useMemo(() => {
-    return allProducts.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase())
-    ).filter(product => product.id !== featuredProduct?.id); // Exclude featured product from regular list
-  }, [allProducts, searchQuery, featuredProduct]);
+  // Filter products based on search and category
+  const displayProducts = useMemo(() => {
+    return filteredItems.filter(product => 
+      product.id !== featuredProduct?.id && // Exclude featured product
+      (searchQuery === '' || // If no search query, include all
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [filteredItems, searchQuery, featuredProduct]);
 
   const handleAddToCart = (product: Product) => {
     dispatch(addToCart({ ...product, quantity: 1 }));
@@ -204,8 +239,13 @@ const ProductList: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      {renderPopup()}
       <Grid container spacing={3}>
         {/* Category-dependent Banner */}
         <Grid item xs={12}>
@@ -463,80 +503,72 @@ const ProductList: React.FC = () => {
         {/* Products Grid */}
         <Grid item xs={12} md={10}>
           {/* Search Bar */}
-          <Box sx={{ mb: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
             <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Search products..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-                endAdornment: searchQuery && (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setSearchQuery('')} size="small">
-                      <CloseIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-                sx: {
-                  borderRadius: 2,
-                  bgcolor: 'white',
-                  '& fieldset': {
-                    borderColor: 'rgba(0,0,0,0.23)',
-                  },
-                }
+              onChange={handleSearchChange}
+              placeholder="Search products..."
+              variant="outlined"
+              fullWidth
+              sx={{
+                maxWidth: '600px',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                },
               }}
             />
             <Button
-              fullWidth
               variant="contained"
-              size="large"
               sx={{
-                mt: 2,
-                py: 1.5,
                 background: 'linear-gradient(45deg, #FF6B6B 30%, #FF8E53 90%)',
-                border: '2px solid #FFD700',
-                borderRadius: 2,
+                border: 0,
+                borderRadius: '25px',
+                boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
                 color: 'white',
+                padding: '10px 30px',
+                height: '56px',
                 fontWeight: 'bold',
                 fontSize: '1.1rem',
                 textTransform: 'none',
-                boxShadow: '0 4px 20px rgba(255,107,107,0.4)',
                 animation: 'pulse 2s infinite',
                 '@keyframes pulse': {
                   '0%': {
                     transform: 'scale(1)',
-                    boxShadow: '0 4px 20px rgba(255,107,107,0.4)',
+                    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
                   },
                   '50%': {
-                    transform: 'scale(1.02)',
-                    boxShadow: '0 4px 30px rgba(255,107,107,0.6)',
+                    transform: 'scale(1.05)',
+                    boxShadow: '0 5px 15px 4px rgba(255, 105, 135, .4)',
                   },
                   '100%': {
                     transform: 'scale(1)',
-                    boxShadow: '0 4px 20px rgba(255,107,107,0.4)',
+                    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
                   },
                 },
                 '&:hover': {
                   background: 'linear-gradient(45deg, #FF8E53 30%, #FF6B6B 90%)',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 25px rgba(255,107,107,0.6)',
+                  transition: 'all 0.3s ease-in-out',
+                },
+              }}
+              onClick={() => {
+                // Add a flash effect to the search bar
+                const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+                if (searchInput && searchInput.value) {
+                  searchInput.style.transition = 'background-color 0.3s';
+                  searchInput.style.backgroundColor = '#fff3e0';
+                  setTimeout(() => {
+                    searchInput.style.backgroundColor = 'white';
+                  }, 300);
                 }
               }}
-              onClick={() => window.location.href = 'https://scam.com'}
-              startIcon={<SearchIcon sx={{ fontSize: 28 }} />}
             >
-              SEARCH 
+              Search Now and Save! 🔥
             </Button>
           </Box>
 
           {/* Product Grid */}
-          <Grid container spacing={3}>
+          <Grid container spacing={3} onClick={handleInteraction}>
             {/* Featured Product */}
             {featuredProduct && (
               <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -719,7 +751,7 @@ const ProductList: React.FC = () => {
             )}
 
             {/* Regular Products */}
-            {filteredProducts.map((product) => (
+            {displayProducts.map((product) => (
               <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
                 <Card 
                   sx={{ 
