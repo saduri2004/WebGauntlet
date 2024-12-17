@@ -6,7 +6,7 @@ interface NotificationManagerProps {
   disabled?: boolean;
 }
 
-export const NotificationManager: React.FC<NotificationManagerProps> = ({ disabled = false }) => {
+const NotificationManager: React.FC<NotificationManagerProps> = ({ disabled = false }) => {
   const [showSystemAlert, setShowSystemAlert] = useState(false);
   const location = useLocation();
 
@@ -60,4 +60,4 @@ export const NotificationManager: React.FC<NotificationManagerProps> = ({ disabl
   ) : null;
 };
 
-export default NotificationManager;
+export { NotificationManager };

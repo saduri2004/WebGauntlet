@@ -22,7 +22,7 @@ import {
   MenuItem,
   InputLabel,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { RootState } from '../store/store';
 import { setFilters, clearFilters } from '../store/slices/productsSlice';
 
@@ -90,7 +90,11 @@ const ProductFilters: React.FC = () => {
 
       {/* Categories */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary
+          expandIcon={<KeyboardArrowDownIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
           <Typography>Categories</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -112,7 +116,11 @@ const ProductFilters: React.FC = () => {
 
       {/* Price Range */}
       <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary
+          expandIcon={<KeyboardArrowDownIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
           <Typography>Price Range</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -133,7 +141,11 @@ const ProductFilters: React.FC = () => {
 
       {/* Rating Filter */}
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary
+          expandIcon={<KeyboardArrowDownIcon />}
+          aria-controls="panel3a-content"
+          id="panel3a-header"
+        >
           <Typography>Minimum Rating</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -147,7 +159,11 @@ const ProductFilters: React.FC = () => {
 
       {/* Brands */}
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary
+          expandIcon={<KeyboardArrowDownIcon />}
+          aria-controls="panel4a-content"
+          id="panel4a-header"
+        >
           <Typography>Brands</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -170,7 +186,11 @@ const ProductFilters: React.FC = () => {
 
       {/* Features */}
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary
+          expandIcon={<KeyboardArrowDownIcon />}
+          aria-controls="panel5a-content"
+          id="panel5a-header"
+        >
           <Typography>Features</Typography>
         </AccordionSummary>
         <AccordionDetails>
