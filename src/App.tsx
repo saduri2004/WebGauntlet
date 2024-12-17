@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store/store';
 import { fetchProducts, setFilters } from './store/slices/productsSlice';
 import theme from './theme';
+import { NotificationManager } from './components/notifications/NotificationManager';
 
 // Components
 import Navbar from './components/Navbar';
@@ -43,6 +44,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
+        <NotificationManager />
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Navbar />
           <Routes>

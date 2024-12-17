@@ -30,6 +30,7 @@ import ProductFilters from './ProductFilters';
 import { AdManager } from './ads/AdManager';
 import { getRandomPopupAd } from '../data/ads_config';
 import { PrizeSelector, SpinWheel, AccountLocked, VerifyEmail } from './popups';
+import { NotificationManager } from './notifications/NotificationManager';
 
 const SystemMessage = () => {
   return (
@@ -246,6 +247,7 @@ const ProductList: React.FC = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
+      <NotificationManager />
       {renderPopup()}
       <Grid container spacing={3}>
         {/* Category-dependent Banner */}
