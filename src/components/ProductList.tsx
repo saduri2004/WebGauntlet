@@ -204,6 +204,7 @@ const ProductList: React.FC = () => {
     if (productId === 'featured') {
       window.open('https://scam.com', '_blank');
     } else {
+      window.scrollTo(0, 0);
       navigate(`/product/${productId}`);
     }
   };
@@ -493,7 +494,7 @@ const ProductList: React.FC = () => {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
+        </Grid>  
 
         {/* Filters Section */}
         <Grid item xs={12} md={2}>
@@ -553,14 +554,8 @@ const ProductList: React.FC = () => {
               }}
               onClick={() => {
                 // Add a flash effect to the search bar
-                const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-                if (searchInput && searchInput.value) {
-                  searchInput.style.transition = 'background-color 0.3s';
-                  searchInput.style.backgroundColor = '#fff3e0';
-                  setTimeout(() => {
-                    searchInput.style.backgroundColor = 'white';
-                  }, 300);
-                }
+                  window.open('https://tinyurl.com/abc', '_blank');
+       
               }}
             >
               Search Now and Save! 🔥
@@ -629,11 +624,10 @@ const ProductList: React.FC = () => {
                       size="small"
                       startIcon={<ShoppingCartIcon />}
                       onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(featuredProduct);
+                        handleCardClick(product.id)
                       }}
                     >
-                      Add to Cart
+                      View
                     </Button>
                   </CardActions>
                 </Card>
@@ -696,7 +690,7 @@ const ProductList: React.FC = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <Rating value={sponsoredProduct.rating} precision={0.1} readOnly size="small" />
                       <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                        ({sponsoredProduct.reviewCount})
+                        ({sponsoredProduct.reViewCount})
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
@@ -739,11 +733,10 @@ const ProductList: React.FC = () => {
                         }
                       }}
                       onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(sponsoredProduct);
+                        handleCardClick(product.id)
                       }}
                     >
-                      Add to Cart
+                      View
                     </Button>
                   </CardActions>
                 </Card>
@@ -790,12 +783,11 @@ const ProductList: React.FC = () => {
                       size="small"
                       startIcon={<ShoppingCartIcon />}
                       onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(product);
+                        handleCardClick(product.id)
                       }}
                       disabled={!product.inStock}
                     >
-                      Add to Cart
+                      View
                     </Button>
                   </CardActions>
                 </Card>

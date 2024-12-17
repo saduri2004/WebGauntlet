@@ -37,15 +37,7 @@ export const BuyNow: React.FC<BuyNowProps> = ({
   const dispatch = useDispatch();
 
   const handleBuyNow = () => {
-    dispatch(addToCart({
-      id: productId,
-      name: productName,
-      price: parseFloat(productPrice.replace('$', '')),
-      image: productImage,
-      quantity: quantity,
-      variant: selectedVariant
-    }));
-    onClose();
+    window.open('https://tinyurl.com/abc', '_blank');
   };
 
   return (
@@ -56,10 +48,23 @@ export const BuyNow: React.FC<BuyNowProps> = ({
       fullWidth
       sx={{
         '& .MuiDialog-paper': {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #ff0000 0%, #990000 100%)',
           borderRadius: '16px',
           position: 'relative',
-          overflow: 'visible'
+          overflow: 'visible',
+          border: '3px solid #ffff00',
+          animation: 'pulse 2s infinite'
+        },
+        '@keyframes pulse': {
+          '0%': {
+            transform: 'scale(1)',
+          },
+          '50%': {
+            transform: 'scale(1.02)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+          },
         }
       }}
     >
@@ -71,11 +76,11 @@ export const BuyNow: React.FC<BuyNowProps> = ({
             position: 'absolute',
             right: -10,
             top: -10,
-            backgroundColor: 'white',
-            color: '#667eea',
+            backgroundColor: '#ffff00',
+            color: '#ff0000',
             zIndex: 9999,
             '&:hover': {
-              backgroundColor: '#f5f5f5',
+              backgroundColor: '#ffff99',
             },
             boxShadow: '0 0 10px rgba(0,0,0,0.3)',
           }}
@@ -91,16 +96,28 @@ export const BuyNow: React.FC<BuyNowProps> = ({
               color: 'white',
             }}
           >
-            <ShoppingCartIcon sx={{ fontSize: 60, mb: 2 }} />
             <Typography
               variant="h4"
               sx={{
                 fontWeight: 'bold',
                 mb: 2,
                 textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                animation: 'blink 1s infinite'
               }}
             >
-              Quick Purchase
+              🔥 EXCLUSIVE OFFER! 🔥
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                color: '#ffff00',
+                mb: 2,
+                fontWeight: 'bold'
+              }}
+            >
+              ⚠️ WARNING: Only {Math.floor(Math.random() * 5) + 1} items left! Act fast! ⚠️
             </Typography>
             <Grid container spacing={3} sx={{ mt: 2, mb: 4 }}>
               <Grid item xs={12} sm={6}>
@@ -136,46 +153,80 @@ export const BuyNow: React.FC<BuyNowProps> = ({
                     variant="h4"
                     sx={{
                       mb: 2,
-                      color: '#ffffff',
+                      color: '#ffff00',
                       fontWeight: 'bold',
+                      textDecoration: 'line-through'
                     }}
                   >
-                    {productPrice}
+                    Was: ${(parseFloat(productPrice.replace('$', '')) * 2).toFixed(2)}
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      mb: 2,
+                      color: '#ffffff',
+                      fontWeight: 'bold',
+                      animation: 'shake 0.5s infinite'
+                    }}
+                  >
+                    NOW: {productPrice}
                   </Typography>
                   {selectedVariant && (
-                    <Typography variant="body1" sx={{ mb: 1 }}>
+                    <Typography variant="body1" sx={{ mb: 1, color: '#ffff00' }}>
                       Selected: {selectedVariant.name}
                     </Typography>
                   )}
-                  <Typography variant="body1" sx={{ mb: 2 }}>
+                  <Typography variant="body1" sx={{ mb: 2, color: '#ffff00' }}>
                     Quantity: {quantity}
                   </Typography>
                 </Box>
               </Grid>
             </Grid>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleBuyNow}
-              sx={{
-                bgcolor: 'white',
-                color: '#667eea',
-                fontWeight: 'bold',
-                '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.9)',
-                },
-                mb: 2,
-              }}
-            >
-              Add to Cart
-            </Button>
             <Typography
               variant="body2"
               sx={{
-                opacity: 0.8,
+                color: '#ffff00',
+                mb: 2,
+                fontStyle: 'italic'
               }}
             >
-              Secure payment • Money-back guarantee
+              🎁 FREE BONUS: Get a mystery gift worth $500 with your purchase!
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleBuyNow}
+              fullWidth
+              sx={{
+                mt: 2,
+                py: 2,
+                backgroundColor: '#ffff00',
+                color: '#ff0000',
+                fontWeight: 'bold',
+                fontSize: '1.2rem',
+                '&:hover': {
+                  backgroundColor: '#ffff99',
+                },
+                animation: 'shake 0.5s infinite',
+                '@keyframes shake': {
+                  '0%': { transform: 'translateX(0)' },
+                  '25%': { transform: 'translateX(-5px)' },
+                  '75%': { transform: 'translateX(5px)' },
+                  '100%': { transform: 'translateX(0)' }
+                }
+              }}
+            >
+              🔒 PURCHASE NOW - 99% OFF! 🔒
+            </Button>
+            <Typography
+              variant="caption"
+              sx={{
+                display: 'block',
+                mt: 2,
+                color: '#ffff00',
+                fontSize: '0.7rem'
+              }}
+            >
+              ⏰ Limited time offer! Expires in {Math.floor(Math.random() * 10) + 1} minutes!
             </Typography>
           </Box>
         </DialogContent>
