@@ -13,9 +13,12 @@ export const ScamPopupManager: React.FC = () => {
 
   const getRandomPopup = () => Math.floor(Math.random() * 3);
 
+  // Don't show popups on checkout page
+  const shouldShowPopups = !location.pathname.includes('/checkout');
+
   // Show popup on initial load
   useEffect(() => {
-    if (location.pathname === '/') {
+    if (location.pathname === '/' && shouldShowPopups) {
       setCurrentPopup(getRandomPopup());
       setShowPopup(true);
     }
@@ -23,7 +26,7 @@ export const ScamPopupManager: React.FC = () => {
 
   // Show popup on category change
   useEffect(() => {
-    if (location.pathname.startsWith('/category/')) {
+    if (location.pathname.startsWith('/category/') && shouldShowPopups) {
       setCurrentPopup(getRandomPopup());
       setShowPopup(true);
     }
@@ -31,17 +34,29 @@ export const ScamPopupManager: React.FC = () => {
 
   // Show popup every 30 seconds
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentPopup(getRandomPopup());
-      setShowPopup(true);
-    }, POPUP_INTERVAL);
+    let intervalId: NodeJS.Timeout;
+    
+    if (shouldShowPopups) {
+      intervalId = setInterval(() => {
+        setCurrentPopup(getRandomPopup());
+        setShowPopup(true);
+      }, POPUP_INTERVAL);
+    }
 
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [location.pathname]);
 
   const handleClose = () => {
     setShowPopup(false);
   };
+
+  if (!shouldShowPopups) {
+    return null;
+  }
 
   return (
     <>

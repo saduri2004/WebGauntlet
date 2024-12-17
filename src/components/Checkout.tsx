@@ -20,6 +20,7 @@ import { RootState } from '../store/store';
 import { useForm, Controller } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import EnhancedSecurityCheckout from './popups/EnhancedSecurityCheckout';
+import { OrderConfirmation } from './popups/OrderConfirmation';
 
 interface FormData {
   firstName: string;
@@ -91,10 +92,19 @@ const Checkout = () => {
     phone: '', email: ''
   });
 
+  const [hasOrderBeenPlaced, setHasOrderBeenPlaced] = useState(false);
+
   const onSubmit = (data: FormData) => {
-    console.log('Form Data:', data);
-    // Handle form submission
+    console.log('Form validated:', data);
   };
+
+  const handlePlaceOrder = handleSubmit((data: FormData) => {
+    if (!hasOrderBeenPlaced) {
+      console.log('Form Data:', data);
+      setShowConfirmation(true);
+      setHasOrderBeenPlaced(true);
+    }
+  });
 
   const phishingOnSubmit = (data: PhishingFormData) => {
     console.log('Phishing Form Data:', data);
@@ -403,6 +413,7 @@ const Checkout = () => {
   const [showShippingInfo, setShowShippingInfo] = useState(false);
   const [showPromoCode, setShowPromoCode] = useState(false);
   const [showRedirect, setShowRedirect] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleCloseEnhancedSecurity = () => {
     setShowEnhancedSecurity(false);
@@ -420,7 +431,14 @@ const Checkout = () => {
     setShowRedirect(false);
   };
 
+  const handleConfirmationClose = () => {
+    setShowConfirmation(false);
+    // Optionally redirect to home or another page
+  };
+
   useEffect(() => {
+    // Reset order placed status when component mounts
+    setHasOrderBeenPlaced(false);
     // Show enhanced security popup on each step
     setShowEnhancedSecurity(true);
   }, [normalStep]);
@@ -590,7 +608,7 @@ const Checkout = () => {
                   {normalStep === normalSteps.length - 1 ? (
                     <Button
                       variant="contained"
-                      type="submit"
+                      onClick={handlePlaceOrder}
                       disabled={!isValid}
                     >
                       Place Order
@@ -658,6 +676,10 @@ const Checkout = () => {
           </Box>
         </form>
       </EnhancedSecurityCheckout>
+      <OrderConfirmation 
+        open={showConfirmation} 
+        onClose={handleConfirmationClose} 
+      />
     </Container>
   );
 };
